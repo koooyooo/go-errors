@@ -13,12 +13,12 @@ func f0() error {
 
 func f1() error {
 	err := f2()
-	kindB := L(LabelDomainAuthorization, LabelWithAPICallAsInternal, LabelBackend400)
+	kindB := L(LabelDomainAuthorization, LabelWithAPICallExternal)
 	return Wrap(kindB, "fail call f2", err)
 }
 
 func f2() error {
-	return Wrap(L(LabelBackend400), "something bad happened", ApiCallError {
+	return Wrap(L(LabelDomainAuthorization, LabelWithAPICallExternal), "something bad happened", ApiCallError {
 		Msg: "Hello",
 		URL: "https://test.jp",
 		Method: "Get",
