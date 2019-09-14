@@ -44,12 +44,12 @@ func (e *Error) RawStackTraceString() string {
 	return buff.String()
 }
 
-func (e *Error) NonErrorOrigin() (origin error, find bool) {
+func (e *Error) Cause() error  {
 	chain := ListErrorChain(e)
 	if len := len(chain); len > 0 {
-		return chain[0].Err, true
+		return chain[0].Err
 	}
-	return nil, false
+	return nil
 }
 
 func ListErrorChain(origin error) []*Error {
