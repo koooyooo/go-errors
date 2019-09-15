@@ -20,6 +20,9 @@ func (e *Error) Error() string {
 }
 
 var formatError = func(e *Error) string {
+	if e.Err == nil {
+		return e.Msg
+	}
 	return e.Msg + " || " + e.Err.Error()
 }
 

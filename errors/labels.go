@@ -24,6 +24,8 @@ func (k Labels) String() string {
 	return "[" + strings.Join(s, ",") + "]"
 }
 
+var NoLabel = L()
+
 func L(args ...interface{}) *Labels {
 	var labels []Label
 	for _, i := range args {
