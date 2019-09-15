@@ -87,35 +87,35 @@ func ListErrorChain(topOfStack error) []*Error {
 	return append(list, ListErrorChain(child)...)
 }
 
-func New(kind *Labels, msg string) *Error {
+func New(labels *Labels, msg string) *Error {
 	stack, _ := NewStack(2)
 	return &Error{
 		Msg:            msg,
-		Labels:         kind,
+		Labels:         labels,
 		Err:            nil,
 		Stack:          stack,
 		RawStackTraces: NewStackTrace(2),
 	}
 }
 
-func Errorf(kind *Labels, format string, args ...interface{}) *Error {
+func Errorf(labels *Labels, format string, args ...interface{}) *Error {
 	msg := fmt.Sprintf(format, args...)
 	stack, _ := NewStack(2)
 	return &Error{
 		Msg:            msg,
-		Labels:         kind,
+		Labels:         labels,
 		Err:            nil,
 		Stack:          stack,
 		RawStackTraces: NewStackTrace(2),
 	}
 }
 
-func Wrap(kind *Labels, msg string, cause error) *Error {
+func Wrap(labels *Labels, msg string, cause error) *Error {
 	stack, _ := NewStack(2)
 	error, ok := cause.(*Error)
 	wrap := &Error{
 		Msg:            msg,
-		Labels:         kind,
+		Labels:         labels,
 		Stack:          stack,
 	}
 	if !ok {

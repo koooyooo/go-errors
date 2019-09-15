@@ -27,6 +27,10 @@ func f2() error {
 	})
 }
 
+func TestNew(t *testing.T) {
+
+}
+
 func TestDo(t *testing.T) {
 	err := f0()
 	error, ok := err.(*Error)
@@ -44,6 +48,9 @@ func TestDo(t *testing.T) {
 		}
 	}
 }
+
+
+
 
 type ApiCallError struct {
 	Msg string
