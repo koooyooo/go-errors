@@ -3,6 +3,7 @@ package errors
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"testing"
 )
 
@@ -28,11 +29,17 @@ func f2() error {
 
 func TestDo(t *testing.T) {
 	err := f0()
-	e, _ := err.(*Error)
-	fmt.Println(e.StackTraceString())
-	fmt.Println(e.RawStackTraceString())
-	if api, ok := e.Cause().(ApiCallError); ok {
-		fmt.Printf("Operate API Call Error %v", api)
+	error, ok := err.(*Error)
+	if !ok {
+		fmt.Println(err.Error())
+	} else {
+		error.PrintStackTrace(os.Stdout)
+		fmt.Println()
+		error.PrintRawStackTrace(os.Stdout)
+		fmt.Println()
+		if api, ok := error.Cause().(ApiCallError); ok {
+			fmt.Printf("Operate API Call Error: %v", api)
+		}
 	}
 }
 

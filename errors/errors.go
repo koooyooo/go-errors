@@ -3,6 +3,7 @@ package errors
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"strings"
 )
 
@@ -15,7 +16,7 @@ type Error struct {
 }
 
 func (e *Error) Error() string {
-	return e.Err.Error()
+	return e.Msg + " -> (" + e.Err.Error() + ")"
 }
 
 var formatStackTrace = func (i int, err *Error) string {
@@ -44,6 +45,10 @@ func (e *Error) StackTraceString() string {
 	return buff.String()
 }
 
+func (e *Error) PrintStackTrace(w io.Writer) {
+	fmt.Fprint(w, e.StackTraceString())
+}
+
 // RawStackTraceString は発生地点から全てのスタックを走査したトレース情報を出力
 func (e *Error) RawStackTraceString() string {
 	buff := bytes.Buffer{}
@@ -53,10 +58,14 @@ func (e *Error) RawStackTraceString() string {
 	return buff.String()
 }
 
+func (e *Error) PrintRawStackTrace(w io.Writer) {
+	fmt.Fprint(w, e.RawStackTraceString())
+}
+
 func (e *Error) Cause() error  {
 	chain := ListErrorChain(e)
 	if len := len(chain); len > 0 {
-		return chain[0].Err
+		return chain[len -1].Err
 	}
 	return nil
 }
