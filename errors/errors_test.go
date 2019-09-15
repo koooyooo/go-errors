@@ -112,6 +112,18 @@ func TestRawStackTraceString(t *testing.T) {
 	assert.Contains(t, s, "errors.f2")
 }
 
+func TestGetCauseAndOperateByTypes(t *testing.T) {
+	err := f0()
+	error, _ := err.(*Error)
+
+	// get cause and use its info to operate
+	apiErr, _ := error.Cause().(ApiCallError)
+	assert.Equal(t, "Auth API call", apiErr.Msg)
+	assert.Equal(t, "Get", apiErr.Method)
+	assert.Equal(t, "https://test.auth.com", apiErr.URL)
+	assert.Equal(t, 500, apiErr.StCode)
+}
+
 func TestCheckOutput(t *testing.T) {
 	err := f0()
 	error, _ := err.(*Error)
