@@ -6,6 +6,18 @@ import (
 	"strings"
 )
 
+var formatStackTrace = func (i int, err *Error) string {
+	getFileNameFromPath := func(s string) string {
+		fragments := strings.Split(s, "/")
+		return fragments[len(fragments)-1]
+	}
+	return fmt.Sprintf("%d. @%s -> (%s: %d) %s [%v] \n", i, err.Stack.FuncName, getFileNameFromPath(err.Stack.File), err.Stack.Line, err.Msg, err.Labels)
+}
+
+var formatRawStackTrace = func (i int, s *Stack) string {
+	return fmt.Sprintf("%d. %s (%s: %d) \n", i, s.FuncName, s.File, s.Line)
+}
+
 type Error struct {
 	Msg            string
 	Labels         *Labels
@@ -20,14 +32,10 @@ func (e *Error) Error() string {
 
 // StackTraceString は登録スタック基づいた範囲でトレース情報を出力
 func (e *Error) StackTraceString() string {
-	getFileNameFromPath := func(s string) string {
-		fragments := strings.Split(s, "/")
-		return fragments[len(fragments)-1]
-	}
 	buff := bytes.Buffer{}
 	errors := ListErrorChain(e)
 	for i, err := range errors {
-		buff.WriteString(fmt.Sprintf("%d. @%s -> (%s: %d) %s [%v] \n", i, err.Stack.FuncName, getFileNameFromPath(err.Stack.File), err.Stack.Line, err.Msg, err.Labels))
+		buff.WriteString(formatStackTrace(i, err))
 		if i == (len(errors) - 1) && err.Err != nil {
 			buff.WriteString(fmt.Sprintf("Cause: %s \n", err.Err.Error()))
 		}
@@ -39,7 +47,7 @@ func (e *Error) StackTraceString() string {
 func (e *Error) RawStackTraceString() string {
 	buff := bytes.Buffer{}
 	for i, s := range e.RawStackTraces {
-		buff.WriteString(fmt.Sprintf("%d. %s (%s: %d) \n", i, s.FuncName, s.File, s.Line))
+		buff.WriteString(formatRawStackTrace(i, s))
 	}
 	return buff.String()
 }
