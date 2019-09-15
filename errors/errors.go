@@ -20,11 +20,11 @@ func (e *Error) Error() string {
 }
 
 var formatStackTrace = func (i int, err *Error) string {
-	return fmt.Sprintf("%d. @%s -> (%s: %d) %s %v \n", i, err.Stack.FuncName, getFileNameFromPath(err.Stack.File), err.Stack.Line, err.Msg, err.Labels)
+	return fmt.Sprintf("%d. @%s (%s: %d) -> %s %v \n", i, err.Stack.FuncName, getFileNameFromPath(err.Stack.File), err.Stack.Line, err.Msg, err.Labels)
 }
 
 var formatRawStackTrace = func (i int, s *Stack) string {
-	return fmt.Sprintf("%d. %s (%s: %d) \n", i, s.FuncName, s.File, s.Line)
+	return fmt.Sprintf("%d. @%s (%s: %d) \n", i, s.FuncName, s.File, s.Line)
 }
 
 func getFileNameFromPath(s string) string {
@@ -98,24 +98,21 @@ func Errorf(kind *Labels, format string, args ...interface{}) *Error {
 	}
 }
 
-func Wrap(kind *Labels, msg string, err error) *Error {
+func Wrap(kind *Labels, msg string, cause error) *Error {
 	stack, _ := NewStack(2)
-	e, ok := err.(*Error)
-	if !ok {
-		return &Error{
-			Msg:            msg,
-			Labels:         kind,
-			Err:            err,
-			Stack:          stack,
-			RawStackTraces: NewStackTrace(2),
-		}
-	}
-	return &Error{
+	error, ok := cause.(*Error)
+	wrap := &Error{
 		Msg:            msg,
 		Labels:         kind,
-		Err:            e,
 		Stack:          stack,
-		RawStackTraces: e.RawStackTraces,
 	}
+	if !ok {
+		wrap.Err = cause
+		wrap.RawStackTraces = NewStackTrace(2)
+	} else {
+		wrap.Err = error
+		wrap.RawStackTraces = error.RawStackTraces
+	}
+	return wrap
 }
 

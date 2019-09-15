@@ -30,13 +30,10 @@ func TestDo(t *testing.T) {
 	err := f0()
 	e, _ := err.(*Error)
 	fmt.Println(e.StackTraceString())
-	fmt.Println()
 	fmt.Println(e.RawStackTraceString())
-	fmt.Println()
 	if api, ok := e.Cause().(ApiCallError); ok {
 		fmt.Printf("Operate API Call Error %v", api)
 	}
-
 }
 
 type ApiCallError struct {
