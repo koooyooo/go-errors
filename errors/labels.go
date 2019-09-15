@@ -21,7 +21,7 @@ func (k Labels) String() string {
 	for _, l := range k.Labels {
 		s = append(s, string(l))
 	}
-	return strings.Join(s, ",")
+	return "[" + strings.Join(s, ",") + "]"
 }
 
 func L(args ...interface{}) *Labels {

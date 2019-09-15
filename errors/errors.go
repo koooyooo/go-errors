@@ -6,17 +6,6 @@ import (
 	"strings"
 )
 
-var formatStackTrace = func (i int, err *Error) string {
-	getFileNameFromPath := func(s string) string {
-		fragments := strings.Split(s, "/")
-		return fragments[len(fragments)-1]
-	}
-	return fmt.Sprintf("%d. @%s -> (%s: %d) %s [%v] \n", i, err.Stack.FuncName, getFileNameFromPath(err.Stack.File), err.Stack.Line, err.Msg, err.Labels)
-}
-
-var formatRawStackTrace = func (i int, s *Stack) string {
-	return fmt.Sprintf("%d. %s (%s: %d) \n", i, s.FuncName, s.File, s.Line)
-}
 
 type Error struct {
 	Msg            string
@@ -28,6 +17,19 @@ type Error struct {
 
 func (e *Error) Error() string {
 	return e.Err.Error()
+}
+
+var formatStackTrace = func (i int, err *Error) string {
+	return fmt.Sprintf("%d. @%s -> (%s: %d) %s %v \n", i, err.Stack.FuncName, getFileNameFromPath(err.Stack.File), err.Stack.Line, err.Msg, err.Labels)
+}
+
+var formatRawStackTrace = func (i int, s *Stack) string {
+	return fmt.Sprintf("%d. %s (%s: %d) \n", i, s.FuncName, s.File, s.Line)
+}
+
+func getFileNameFromPath(s string) string {
+	fragments := strings.Split(s, "/")
+	return fragments[len(fragments)-1]
 }
 
 // StackTraceString は登録スタック基づいた範囲でトレース情報を出力
@@ -60,8 +62,8 @@ func (e *Error) Cause() error  {
 	return nil
 }
 
-func ListErrorChain(origin error) []*Error {
-	err, ok := origin.(*Error)
+func ListErrorChain(topOfStack error) []*Error {
+	err, ok := topOfStack.(*Error)
 	if !ok {
 		return []*Error{}
 	}
