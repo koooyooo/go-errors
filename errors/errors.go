@@ -16,7 +16,11 @@ type Error struct {
 }
 
 func (e *Error) Error() string {
-	return e.Msg + " -> (" + e.Err.Error() + ")"
+	return formatError(e)
+}
+
+var formatError = func(e *Error) string {
+	return e.Msg + " || " + e.Err.Error()
 }
 
 var formatStackTrace = func (i int, err *Error) string {
