@@ -42,21 +42,21 @@ Raw StackTrace
 
 New Error with message
 ```go
-    e := New(NoLabel, "new error")
-    return e;
+e := New(NoLabel, "new error")
+return e;
 ```
 
 New Error with message by format and args
 ```go
-    e := Errorf(NoLabel, "new %s", "error")
-    return e;
+e := Errorf(NoLabel, "new %s", "error")
+return e;
 ```
 
 ### Wrap other errors
 ```go
-    err := errors.New("original")
-    e := Wrap(NoLabel, "doing xxx errors", err)
-    return e
+err := errors.New("original")
+e := Wrap(NoLabel, "doing xxx errors", err)
+return e
 ```
 
 ### Label Error
@@ -72,8 +72,8 @@ var LabelWithFileAccess = Label("w/FileAccess")
 var LabelWithAPICall = Label("w/API-Call")
 ```
 ```go
-    err := f2()
-    return Wrap(L(LabelDomainAuthentication, LabelWithAPICall), "fail in calling f2()", err)
+err := f2()
+return Wrap(L(LabelDomainAuthentication, LabelWithAPICall), "fail in calling f2()", err)
 ```
 
 And the log will be labeled like this.
