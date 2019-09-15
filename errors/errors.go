@@ -94,7 +94,7 @@ func New(labels *Labels, msg string) *Error {
 		Labels:         labels,
 		Err:            nil,
 		Stack:          stack,
-		RawStackTraces: NewStackTrace(2),
+		RawStackTraces: NewStackTrace(3),
 	}
 }
 
@@ -106,7 +106,7 @@ func Errorf(labels *Labels, format string, args ...interface{}) *Error {
 		Labels:         labels,
 		Err:            nil,
 		Stack:          stack,
-		RawStackTraces: NewStackTrace(2),
+		RawStackTraces: NewStackTrace(3),
 	}
 }
 
@@ -120,7 +120,7 @@ func Wrap(labels *Labels, msg string, cause error) *Error {
 	}
 	if !ok {
 		wrap.Err = cause
-		wrap.RawStackTraces = NewStackTrace(2)
+		wrap.RawStackTraces = NewStackTrace(3)
 	} else {
 		wrap.Err = error
 		wrap.RawStackTraces = error.RawStackTraces

@@ -3,7 +3,9 @@ package errors
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"os"
+	"strings"
 	"testing"
 )
 
@@ -28,7 +30,17 @@ func f2() error {
 }
 
 func TestNew(t *testing.T) {
+	e := New(L(), "new error")
+	assert.Equal(t,"new error", e.Msg)
+	s := e.Stack
+	assert.True(t, strings.HasSuffix(s.FuncName, "TestNew"))
+}
 
+func TestErrorf(t *testing.T) {
+	e := Errorf(L(), "new %s", "error")
+	assert.Equal(t,"new error", e.Msg)
+	s := e.Stack
+	assert.True(t, strings.HasSuffix(s.FuncName, "TestErrorf"))
 }
 
 func TestDo(t *testing.T) {
