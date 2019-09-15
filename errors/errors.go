@@ -6,7 +6,6 @@ import (
 	"strings"
 )
 
-
 type Error struct {
 	Msg            string
 	Labels         *Labels
@@ -115,4 +114,3 @@ func Wrap(kind *Labels, msg string, cause error) *Error {
 	}
 	return wrap
 }
-
