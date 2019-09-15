@@ -29,7 +29,7 @@ func (e *Error) StackTraceString() string {
 	for i, err := range errors {
 		buff.WriteString(fmt.Sprintf("%d. @%s -> (%s: %d) %s [%v] \n", i, err.Stack.FuncName, getFileNameFromPath(err.Stack.File), err.Stack.Line, err.Msg, err.Labels))
 		if i == (len(errors) - 1) && err.Err != nil {
-			buff.WriteString(err.Err.Error() + "\n")
+			buff.WriteString(fmt.Sprintf("Cause: %s \n", err.Err.Error()))
 		}
 	}
 	return buff.String()
