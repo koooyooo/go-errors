@@ -24,12 +24,12 @@ func (e ApiCallError) Error() string {
 
 func f0() error {
 	err := f1()
-	return Wrap(L(LabelDomainAuthorization), "fail in calling f1()", err)
+	return Wrap(err, L(LabelDomainAuthorization), "fail in calling f1()")
 }
 
 func f1() error {
 	err := f2()
-	return Wrap(L(LabelDomainAuthorization, LabelWithAPICallExternal), "fail in calling f2()", err)
+	return Wrap(err, L(LabelDomainAuthorization, LabelWithAPICallExternal), "fail in calling f2()")
 }
 
 func f2() error {
@@ -39,7 +39,7 @@ func f2() error {
 		Method: "Get",
 		StCode: 500,
 	}
-	return Wrap(L(LabelDomainAuthorization, LabelWithAPICallExternal), "API call failed", err)
+	return Wrap(err, L(LabelDomainAuthorization, LabelWithAPICallExternal), "API call failed")
 }
 
 func TestNew(t *testing.T) {
@@ -70,7 +70,7 @@ func TestErrorf(t *testing.T) {
 
 func TestWrap(t *testing.T) {
 	cause := errors.New("original")
-	e := Wrap(NoLabel, "doing xxx errors", cause)
+	e := Wrap(cause, NoLabel, "doing xxx errors")
 	assert.Equal(t, "doing xxx errors || original", e.Error())
 	assert.Equal(t, "doing xxx errors", e.Msg)
 	assert.Equal(t, cause, e.Cause())
@@ -82,6 +82,19 @@ func TestWrap(t *testing.T) {
 	assert.True(t, strings.HasSuffix(e.RawStackTraces[len-1].FuncName, "TestWrap"))
 }
 
+func TestWrapf(t *testing.T) {
+	cause := errors.New("original")
+	e := Wrapf(cause, NoLabel, "doing xxx %s", "errors")
+	assert.Equal(t, "doing xxx errors || original", e.Error())
+	assert.Equal(t, "doing xxx errors", e.Msg)
+	assert.Equal(t, cause, e.Cause())
+	assert.True(t, strings.HasSuffix(e.Stack.FuncName, "TestWrapf"))
+
+	// runtime.goexit & testing.tRunner & TestNew => 3
+	len := len(e.RawStackTraces)
+	assert.Equal(t, len, 3)
+	assert.True(t, strings.HasSuffix(e.RawStackTraces[len-1].FuncName, "TestWrapf"))
+}
 func TestErrorMethod(t *testing.T) {
 	err := f0()
 	error, _ := err.(*Error)

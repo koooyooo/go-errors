@@ -113,11 +113,29 @@ func Errorf(labels *Labels, format string, args ...interface{}) *Error {
 	}
 }
 
-func Wrap(labels *Labels, msg string, cause error) *Error {
+func Wrap(cause error, labels *Labels, msg string) *Error {
 	stack, _ := NewStack(2)
 	error, ok := cause.(*Error)
 	wrap := &Error{
 		Msg:            msg,
+		Labels:         labels,
+		Stack:          stack,
+	}
+	if !ok {
+		wrap.Err = cause
+		wrap.RawStackTraces = NewStackTrace(3)
+	} else {
+		wrap.Err = error
+		wrap.RawStackTraces = error.RawStackTraces
+	}
+	return wrap
+}
+
+func Wrapf(cause error, labels *Labels, format string, args ...interface{}) *Error {
+	stack, _ := NewStack(2)
+	error, ok := cause.(*Error)
+	wrap := &Error{
+		Msg:            fmt.Sprintf(format, args...),
 		Labels:         labels,
 		Stack:          stack,
 	}
