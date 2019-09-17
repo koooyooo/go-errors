@@ -95,6 +95,7 @@ func TestWrapf(t *testing.T) {
 	assert.Equal(t, len, 3)
 	assert.True(t, strings.HasSuffix(e.RawStackTraces[len-1].FuncName, "TestWrapf"))
 }
+
 func TestErrorMethod(t *testing.T) {
 	err := f0()
 	error, _ := err.(*Error)
