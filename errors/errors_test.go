@@ -136,6 +136,12 @@ func TestGetCauseAndOperateByTypes(t *testing.T) {
 	assert.Equal(t, "Get", apiErr.Method)
 	assert.Equal(t, "https://test.auth.com", apiErr.URL)
 	assert.Equal(t, 500, apiErr.StCode)
+
+	fmt.Printf("%v\n", err)
+	fmt.Println()
+	fmt.Printf("%+v\n", err)
+	fmt.Println()
+	fmt.Printf("%w\n", err)
 }
 
 func TestCheckOutput(t *testing.T) {

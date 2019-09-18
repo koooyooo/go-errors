@@ -8,8 +8,11 @@ type Labels struct {
 	Labels []Label
 }
 
-func (k Labels) AddLabel(ls ...Label) *Labels {
+func (k Labels) AddedClone(ls ...Label) *Labels {
 	var added []Label
+	for _, l := range k.Labels {
+		added = append(added, l)
+	}
 	for _, l := range ls {
 		added = append(added, l)
 	}
